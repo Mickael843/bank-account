@@ -79,6 +79,10 @@ public class AccountController {
         Account account = accountDTO.convertToEntity();
         account.setBirth(birth);
 
+        // Expressões regulares
+        // Retira da string tudo que não for um número
+        account.setCpf(account.getCpf().replaceAll("[^0-9]", ""));
+
         return account;
     }
 
