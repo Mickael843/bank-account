@@ -6,6 +6,8 @@ import com.mikkaeru.bankaccount.domain.validation.account.AccountValidate.create
 import com.mikkaeru.bankaccount.domain.validation.account.AccountValidate.updateAccount;
 import com.mikkaeru.bankaccount.dto.account.AccountDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -51,6 +55,11 @@ public class AccountController {
         return ResponseEntity.ok(accountService.findOne(externalId).convertToDTO());
     }
 
+    @GetMapping("page/{page}")
+    public ResponseEntity<Page<AccountDTO>> getAll(@PathVariable Integer page) {
+        return ResponseEntity.ok(convertToPageDTO(accountService.findAllPages(page)));
+    }
+
     // Irá converter uma string em no seguinte formato 'dd/MM/yyyy' em um objeto LocalDate
     private LocalDate convertDate(String date) {
 
@@ -71,5 +80,16 @@ public class AccountController {
         account.setBirth(birth);
 
         return account;
+    }
+
+    private Page<AccountDTO> convertToPageDTO(Page<Account> accountPage) {
+
+        List<AccountDTO> outputs = new ArrayList<>();
+
+        accountPage.get().forEach(account -> {
+            outputs.add(account.convertToDTO());
+        });
+
+        return new PageImpl<>(outputs);
     }
 }

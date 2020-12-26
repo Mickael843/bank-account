@@ -7,6 +7,9 @@ import com.mikkaeru.bankaccount.domain.service.account.AccountService;
 import com.mikkaeru.bankaccount.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -22,6 +25,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired private AccountRepository accountRepository;
 
+    private static final Integer ITEMS_PER_PAGE = 4;
     private static final String NOT_FOUND = "Conta não encontrada!";
 
     @Override
@@ -60,6 +64,14 @@ public class AccountServiceImpl implements AccountService {
         }
 
         return accountOptional.get();
+    }
+
+    @Override
+    public Page<Account> findAllPages(Integer page) {
+
+        PageRequest pageRequest = PageRequest.of(page, ITEMS_PER_PAGE, Sort.by("fullName"));
+
+        return accountRepository.findAll(pageRequest);
     }
 
     // Verifica a integridade dos dados contidos no objeto 'account'
