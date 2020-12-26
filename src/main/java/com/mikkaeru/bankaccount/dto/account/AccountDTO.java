@@ -2,6 +2,7 @@ package com.mikkaeru.bankaccount.dto.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mikkaeru.bankaccount.domain.model.account.Account;
+import com.mikkaeru.bankaccount.domain.validation.account.AccountValidate;
 import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 import org.modelmapper.ModelMapper;
@@ -10,7 +11,6 @@ import org.modelmapper.PropertyMap;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
@@ -21,22 +21,32 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class AccountDTO {
 
-    @NotNull
+    @NotNull(
+            message = "ExternalId não pode ser nulo!",
+            groups = {AccountValidate.createAccount.class})
     private UUID externalId;
 
-    @NotBlank
+    @NotBlank(
+            message = "FullName não pode estar em branco!",
+            groups = {AccountValidate.createAccount.class})
     private String fullName;
 
     @Email
-    @NotBlank
+    @NotBlank(
+            message = "Email não pode estar em branco!",
+            groups = {AccountValidate.createAccount.class})
     private String email;
 
     @CPF
-    @NotBlank
+    @NotBlank(
+            message = "CPF não pode estar em branco!",
+            groups = {AccountValidate.createAccount.class})
     private String cpf;
 
-    @NotNull
-    private String dateBirth;
+    @NotNull(
+            message = "Birth não pode ser nulo!",
+            groups = {AccountValidate.createAccount.class})
+    private String birth;
 
     public Account convertToEntity() {
         ModelMapper mapper = new ModelMapper();

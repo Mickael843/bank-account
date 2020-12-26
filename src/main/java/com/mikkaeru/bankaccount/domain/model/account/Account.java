@@ -1,6 +1,12 @@
 package com.mikkaeru.bankaccount.domain.model.account;
 
-import javax.persistence.*;
+import com.mikkaeru.bankaccount.dto.account.AccountDTO;
+import org.modelmapper.ModelMapper;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -31,7 +37,7 @@ public class Account implements Serializable {
     private String cpf;
 
     @Column(nullable = false)
-    private LocalDate dateBirth;
+    private LocalDate birth;
 
     @Column(nullable = false)
     private OffsetDateTime createdAt;
@@ -78,12 +84,12 @@ public class Account implements Serializable {
         this.cpf = cpf;
     }
 
-    public LocalDate getDateBirth() {
-        return dateBirth;
+    public LocalDate getBirth() {
+        return birth;
     }
 
-    public void setDateBirth(LocalDate dateBirth) {
-        this.dateBirth = dateBirth;
+    public void setBirth(LocalDate birth) {
+        this.birth = birth;
     }
 
     public OffsetDateTime getCreatedAt() {
@@ -107,11 +113,15 @@ public class Account implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
-        return Objects.equals(id, account.id) && Objects.equals(externalId, account.externalId) && Objects.equals(fullName, account.fullName) && Objects.equals(email, account.email) && Objects.equals(cpf, account.cpf) && Objects.equals(dateBirth, account.dateBirth) && Objects.equals(createdAt, account.createdAt) && Objects.equals(updatedAt, account.updatedAt);
+        return Objects.equals(id, account.id) && Objects.equals(externalId, account.externalId) && Objects.equals(fullName, account.fullName) && Objects.equals(email, account.email) && Objects.equals(cpf, account.cpf) && Objects.equals(birth, account.birth) && Objects.equals(createdAt, account.createdAt) && Objects.equals(updatedAt, account.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, externalId, fullName, email, cpf, dateBirth, createdAt, updatedAt);
+        return Objects.hash(id, externalId, fullName, email, cpf, birth, createdAt, updatedAt);
+    }
+
+    public AccountDTO convertToDTO() {
+        return new ModelMapper().map(this, AccountDTO.class);
     }
 }
