@@ -1,6 +1,6 @@
 package com.mikkaeru.bankaccount.controller;
 
-import com.mikkaeru.bankaccount.domain.model.account.Account;
+import com.mikkaeru.bankaccount.domain.model.owner.Owner;
 import com.mikkaeru.bankaccount.domain.service.account.AccountService;
 import com.mikkaeru.bankaccount.domain.validation.account.AccountValidate.createAccount;
 import com.mikkaeru.bankaccount.domain.validation.account.AccountValidate.updateAccount;
@@ -30,12 +30,12 @@ public class AccountController {
     @PostMapping
     public ResponseEntity<?> create(@Validated(createAccount.class) @RequestBody AccountDTO accountDTO) {
 
-        Account account = accountService.create(convertDTO(accountDTO));
+        Owner owner = accountService.create(convertDTO(accountDTO));
 
         return ResponseEntity.created(
                 ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{externalId}")
-                .buildAndExpand(account.getExternalId())
+                .buildAndExpand(owner.getExternalId())
                 .toUri()
         ).build();
     }
@@ -74,7 +74,7 @@ public class AccountController {
         return  LocalDate.parse(date, format);
     }
 
-    private Account convertDTO(AccountDTO accountDTO) {
+    private Owner convertDTO(AccountDTO accountDTO) {
 
         LocalDate birth = null;
 
@@ -82,19 +82,19 @@ public class AccountController {
             birth = convertDate(accountDTO.getBirth());
         }
 
-        Account account = accountDTO.convertToEntity();
-        account.setBirth(birth);
+        Owner owner = accountDTO.convertToEntity();
+        owner.setBirth(birth);
 
         // Expressões regulares
         // Retira da string tudo que não for um número
-        if (account.getCpf() != null) {
-            account.setCpf(account.getCpf().replaceAll("[^0-9]", ""));
+        if (owner.getCpf() != null) {
+            owner.setCpf(owner.getCpf().replaceAll("[^0-9]", ""));
         }
 
-        return account;
+        return owner;
     }
 
-    private Page<AccountDTO> convertToPageDTO(Page<Account> accountPage) {
+    private Page<AccountDTO> convertToPageDTO(Page<Owner> accountPage) {
 
         List<AccountDTO> outputs = new ArrayList<>();
 

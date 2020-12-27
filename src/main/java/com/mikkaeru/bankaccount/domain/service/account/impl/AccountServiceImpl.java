@@ -2,7 +2,7 @@ package com.mikkaeru.bankaccount.domain.service.account.impl;
 
 import com.mikkaeru.bankaccount.domain.exception.DomainException;
 import com.mikkaeru.bankaccount.domain.exception.DuplicatedDataException;
-import com.mikkaeru.bankaccount.domain.model.account.Account;
+import com.mikkaeru.bankaccount.domain.model.owner.Owner;
 import com.mikkaeru.bankaccount.domain.service.account.AccountService;
 import com.mikkaeru.bankaccount.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,35 +29,35 @@ public class AccountServiceImpl implements AccountService {
     private static final String NOT_FOUND = "Conta não encontrada!";
 
     @Override
-    public Account create(Account account) {
+    public Owner create(Owner owner) {
 
-        accountValidation(account);
+        accountValidation(owner);
 
-        account.setCreatedAt(OffsetDateTime.now());
+        owner.setCreatedAt(OffsetDateTime.now());
 
-        return accountRepository.save(account);
+        return accountRepository.save(owner);
     }
 
     @Override
-    public Account update(Account account) {
+    public Owner update(Owner owner) {
 
-        Optional<Account> accountOptional = accountRepository.findByExternalId(account.getExternalId());
+        Optional<Owner> accountOptional = accountRepository.findByExternalId(owner.getExternalId());
 
         if (accountOptional.isEmpty()) {
             throw new EntityNotFoundException(NOT_FOUND);
         }
 
-        populateFields(account, accountOptional.get());
+        populateFields(owner, accountOptional.get());
 
-        accountValidation(account);
+        accountValidation(owner);
 
-        return accountRepository.save(account);
+        return accountRepository.save(owner);
     }
 
     @Override
-    public Account findOne(UUID externalId) {
+    public Owner findOne(UUID externalId) {
 
-        Optional<Account> accountOptional = accountRepository.findByExternalId(externalId);
+        Optional<Owner> accountOptional = accountRepository.findByExternalId(externalId);
 
         if (accountOptional.isEmpty()) {
             throw new EntityNotFoundException(NOT_FOUND);
@@ -67,11 +67,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Page<Account> findAllPages(Integer page) {
+    public Page<Owner> findAllPages(Integer page) {
 
         PageRequest pageRequest = PageRequest.of(page, ITEMS_PER_PAGE, Sort.by("fullName"));
 
-        Page<Account> accountPage = accountRepository.findAll(pageRequest);
+        Page<Owner> accountPage = accountRepository.findAll(pageRequest);
 
         if (page == 0 && accountPage.getTotalElements() == 0) {
             throw new EntityNotFoundException("Nenhuma página foi encontrada!");
@@ -83,7 +83,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void delete(UUID externalId) {
 
-        Optional<Account> accountOptional = accountRepository.findByExternalId(externalId);
+        Optional<Owner> accountOptional = accountRepository.findByExternalId(externalId);
 
         if (accountOptional.isEmpty()) {
             throw new EntityNotFoundException(NOT_FOUND);
@@ -96,57 +96,57 @@ public class AccountServiceImpl implements AccountService {
     // caso algum dado obrigatório esteja nulo ou em brando
     // será dispara a exceção 'DataIntegrityViolationException' retornando
     // status 400 para o client e informando o campo incorreto.
-    private void accountValidation(Account account) {
+    private void accountValidation(Owner owner) {
 
-        if (account.getExternalId() == null) {
+        if (owner.getExternalId() == null) {
             throw new DataIntegrityViolationException("ExternalId não pode ser nulo!");
         }
 
-        if (account.getFullName().isBlank() || account.getFullName() == null) {
+        if (owner.getFullName().isBlank() || owner.getFullName() == null) {
             throw new DataIntegrityViolationException("FullName não pode ser nulo!");
         }
 
-        if (account.getEmail().isBlank() || account.getEmail() == null) {
+        if (owner.getEmail().isBlank() || owner.getEmail() == null) {
             throw new DataIntegrityViolationException("Email não pode ser nulo!");
         }
 
-        if (account.getCpf().isBlank() || account.getCpf() == null) {
+        if (owner.getCpf().isBlank() || owner.getCpf() == null) {
             throw new DataIntegrityViolationException("cpf não pode ser nulo!");
         }
 
-        if (account.getBirth() == null) {
+        if (owner.getBirth() == null) {
             throw new DataIntegrityViolationException("Birth não pode ser nulo!");
         }
 
-        if (account.getId() == null) {
-            duplicateFieldsValidation(account);
+        if (owner.getId() == null) {
+            duplicateFieldsValidation(owner);
         }
     }
 
     // Irá verificar se existem campos duplicados e retornar um objeto com os campos que não
     // vão ser alterados preenchidos.
-    private void duplicateFieldsValidation(Account account) {
+    private void duplicateFieldsValidation(Owner owner) {
         StringBuilder duplicatedFields = new StringBuilder();
 
-        List<Account> accountsSaved = accountRepository.findAll();
+        List<Owner> accountsSaved = accountRepository.findAll();
 
         // Percorre a lista de contas já salvas no banco de dados e se existir
         // algum dados igual em nosso objeto 'account' uma exceção será lançada.
-        for (Account accountInDatabase: accountsSaved) {
+        for (Owner ownerInDatabase : accountsSaved) {
 
-            if (account.getExternalId().equals(accountInDatabase.getExternalId())) {
+            if (owner.getExternalId().equals(ownerInDatabase.getExternalId())) {
                 duplicatedFields.append("externalId|");
             }
 
-            if (account.getFullName().equals(accountInDatabase.getFullName())) {
+            if (owner.getFullName().equals(ownerInDatabase.getFullName())) {
                 duplicatedFields.append("fullName|");
             }
 
-            if (account.getEmail().equals(accountInDatabase.getEmail())) {
+            if (owner.getEmail().equals(ownerInDatabase.getEmail())) {
                 duplicatedFields.append("email|");
             }
 
-            if (account.getCpf().equals(accountInDatabase.getCpf())) {
+            if (owner.getCpf().equals(ownerInDatabase.getCpf())) {
                 duplicatedFields.append("cpf");
             }
 
@@ -160,26 +160,26 @@ public class AccountServiceImpl implements AccountService {
 
     // Verifica os campos que não foram enviados na requisição
     // e os preenche com os dados já existentes no banco de dados
-    private void populateFields(Account account, Account accountInDatabase) {
+    private void populateFields(Owner owner, Owner ownerInDatabase) {
 
-        if (account.getFullName() == null) {
-            account.setFullName(accountInDatabase.getFullName());
+        if (owner.getFullName() == null) {
+            owner.setFullName(ownerInDatabase.getFullName());
         }
 
-        if (account.getEmail() == null) {
-            account.setEmail(accountInDatabase.getEmail());
+        if (owner.getEmail() == null) {
+            owner.setEmail(ownerInDatabase.getEmail());
         }
 
-        if (account.getCpf() == null) {
-            account.setCpf(accountInDatabase.getCpf());
+        if (owner.getCpf() == null) {
+            owner.setCpf(ownerInDatabase.getCpf());
         }
 
-        if (account.getBirth() == null) {
-            account.setBirth(accountInDatabase.getBirth());
+        if (owner.getBirth() == null) {
+            owner.setBirth(ownerInDatabase.getBirth());
         }
 
-        account.setId(accountInDatabase.getId());
-        account.setUpdatedAt(OffsetDateTime.now());
-        account.setCreatedAt(accountInDatabase.getCreatedAt());
+        owner.setId(ownerInDatabase.getId());
+        owner.setUpdatedAt(OffsetDateTime.now());
+        owner.setCreatedAt(ownerInDatabase.getCreatedAt());
     }
 }

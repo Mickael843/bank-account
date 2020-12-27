@@ -1,4 +1,4 @@
-CREATE TABLE account (
+CREATE TABLE owner (
     id bigint NOT NULL,
     birth date NOT NULL,
     cpf character varying(255) NOT NULL,

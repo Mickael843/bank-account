@@ -1,18 +1,15 @@
 package com.mikkaeru.bankaccount.domain.model.account;
 
-import com.mikkaeru.bankaccount.dto.account.AccountDTO;
-import org.modelmapper.ModelMapper;
+import com.mikkaeru.bankaccount.domain.model.enumeration.AccountType;
+import com.mikkaeru.bankaccount.domain.model.owner.Owner;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
+import static javax.persistence.EnumType.ORDINAL;
 import static javax.persistence.GenerationType.AUTO;
 
 @Entity
@@ -24,20 +21,31 @@ public class Account implements Serializable {
     @GeneratedValue(strategy = AUTO)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @ManyToOne
+    @Column(name = "owner_account", nullable = false)
+    private Owner owner;
+
+    @Column(unique = true, nullable = false)
     private UUID externalId;
 
+    @Enumerated(ORDINAL)
     @Column(nullable = false)
-    private String fullName;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false, unique = true)
-    private String cpf;
+    private AccountType type;
 
     @Column(nullable = false)
-    private LocalDate birth;
+    private String bankCode;
+
+    @Column(nullable = false)
+    private String agency;
+
+    @Column(nullable = false)
+    private String number;
+
+    @Column(nullable = false)
+    private String securityCode;
+
+    @Column(nullable = false)
+    private OffsetDateTime valid;
 
     @Column(nullable = false)
     private OffsetDateTime createdAt;
@@ -52,6 +60,14 @@ public class Account implements Serializable {
         this.id = id;
     }
 
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
     public UUID getExternalId() {
         return externalId;
     }
@@ -60,36 +76,52 @@ public class Account implements Serializable {
         this.externalId = externalId;
     }
 
-    public String getFullName() {
-        return fullName;
+    public AccountType getType() {
+        return type;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setType(AccountType type) {
+        this.type = type;
     }
 
-    public String getEmail() {
-        return email;
+    public String getBankCode() {
+        return bankCode;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setBankCode(String bankCode) {
+        this.bankCode = bankCode;
     }
 
-    public String getCpf() {
-        return cpf;
+    public String getAgency() {
+        return agency;
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
+    public void setAgency(String agency) {
+        this.agency = agency;
     }
 
-    public LocalDate getBirth() {
-        return birth;
+    public String getNumber() {
+        return number;
     }
 
-    public void setBirth(LocalDate birth) {
-        this.birth = birth;
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getSecurityCode() {
+        return securityCode;
+    }
+
+    public void setSecurityCode(String securityCode) {
+        this.securityCode = securityCode;
+    }
+
+    public OffsetDateTime getValid() {
+        return valid;
+    }
+
+    public void setValid(OffsetDateTime valid) {
+        this.valid = valid;
     }
 
     public OffsetDateTime getCreatedAt() {
@@ -113,15 +145,11 @@ public class Account implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
-        return Objects.equals(id, account.id) && Objects.equals(externalId, account.externalId) && Objects.equals(fullName, account.fullName) && Objects.equals(email, account.email) && Objects.equals(cpf, account.cpf) && Objects.equals(birth, account.birth) && Objects.equals(createdAt, account.createdAt) && Objects.equals(updatedAt, account.updatedAt);
+        return Objects.equals(id, account.id) && Objects.equals(owner, account.owner) && Objects.equals(externalId, account.externalId) && type == account.type && Objects.equals(bankCode, account.bankCode) && Objects.equals(agency, account.agency) && Objects.equals(number, account.number) && Objects.equals(securityCode, account.securityCode) && Objects.equals(valid, account.valid) && Objects.equals(createdAt, account.createdAt) && Objects.equals(updatedAt, account.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, externalId, fullName, email, cpf, birth, createdAt, updatedAt);
-    }
-
-    public AccountDTO convertToDTO() {
-        return new ModelMapper().map(this, AccountDTO.class);
+        return Objects.hash(id, owner, externalId, type, bankCode, agency, number, securityCode, valid, createdAt, updatedAt);
     }
 }

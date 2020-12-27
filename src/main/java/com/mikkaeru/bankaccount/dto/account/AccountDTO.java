@@ -1,7 +1,7 @@
 package com.mikkaeru.bankaccount.dto.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mikkaeru.bankaccount.domain.model.account.Account;
+import com.mikkaeru.bankaccount.domain.model.owner.Owner;
 import com.mikkaeru.bankaccount.domain.validation.account.AccountValidate;
 import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
@@ -48,14 +48,14 @@ public class AccountDTO {
             groups = {AccountValidate.createAccount.class})
     private String birth;
 
-    public Account convertToEntity() {
+    public Owner convertToEntity() {
         ModelMapper mapper = new ModelMapper();
         mapper.addMappings(skipIdFieldsMap);
-        return mapper.map(this, Account.class);
+        return mapper.map(this, Owner.class);
     }
 
     @JsonIgnore
-    PropertyMap<AccountDTO, Account> skipIdFieldsMap = new PropertyMap<>() {
+    PropertyMap<AccountDTO, Owner> skipIdFieldsMap = new PropertyMap<>() {
         @Override
         protected void configure() {
             skip().setId(null);
