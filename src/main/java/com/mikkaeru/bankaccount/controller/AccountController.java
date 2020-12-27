@@ -81,7 +81,9 @@ public class AccountController {
 
         // Expressões regulares
         // Retira da string tudo que não for um número
-        account.setCpf(account.getCpf().replaceAll("[^0-9]", ""));
+        if (account.getCpf() != null) {
+            account.setCpf(account.getCpf().replaceAll("[^0-9]", ""));
+        }
 
         return account;
     }

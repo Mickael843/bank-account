@@ -71,7 +71,13 @@ public class AccountServiceImpl implements AccountService {
 
         PageRequest pageRequest = PageRequest.of(page, ITEMS_PER_PAGE, Sort.by("fullName"));
 
-        return accountRepository.findAll(pageRequest);
+        Page<Account> accountPage = accountRepository.findAll(pageRequest);
+
+        if (page == 0 && accountPage.getTotalElements() == 0) {
+            throw new EntityNotFoundException("Nenhuma página foi encontrada!");
+        }
+
+        return accountPage;
     }
 
     // Verifica a integridade dos dados contidos no objeto 'account'
