@@ -14,4 +14,6 @@ public interface AccountService {
     Account findOne(UUID externalId);
 
     Page<Account> findAllPages(Integer page);
+
+    void delete(UUID externalId);
 }

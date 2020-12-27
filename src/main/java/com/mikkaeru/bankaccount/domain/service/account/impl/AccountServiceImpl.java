@@ -80,6 +80,18 @@ public class AccountServiceImpl implements AccountService {
         return accountPage;
     }
 
+    @Override
+    public void delete(UUID externalId) {
+
+        Optional<Account> accountOptional = accountRepository.findByExternalId(externalId);
+
+        if (accountOptional.isEmpty()) {
+            throw new EntityNotFoundException(NOT_FOUND);
+        }
+
+        accountRepository.delete(accountOptional.get());
+    }
+
     // Verifica a integridade dos dados contidos no objeto 'account'
     // caso algum dado obrigatório esteja nulo ou em brando
     // será dispara a exceção 'DataIntegrityViolationException' retornando

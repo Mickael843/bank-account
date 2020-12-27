@@ -60,6 +60,12 @@ public class AccountController {
         return ResponseEntity.ok(convertToPageDTO(accountService.findAllPages(page)));
     }
 
+    @DeleteMapping("/{externalId}")
+    public ResponseEntity<?> delete(@PathVariable UUID externalId) {
+        accountService.delete(externalId);
+        return ResponseEntity.noContent().build();
+    }
+
     // Irá converter uma string em no seguinte formato 'dd/MM/yyyy' em um objeto LocalDate
     private LocalDate convertDate(String date) {
 
