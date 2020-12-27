@@ -1,0 +1,13 @@
+version: '3.1'
+
+services:
+
+  postgres:
+    container_name: postgres_docker
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: bank_database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
