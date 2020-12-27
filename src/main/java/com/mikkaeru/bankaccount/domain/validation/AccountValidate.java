@@ -1,4 +1,4 @@
-package com.mikkaeru.bankaccount.domain.validation.account;
+package com.mikkaeru.bankaccount.domain.validation;
 
 public interface AccountValidate {
 

@@ -1,5 +1,6 @@
 package com.mikkaeru.bankaccount.controller;
 
+import com.mikkaeru.bankaccount.domain.model.account.Account;
 import com.mikkaeru.bankaccount.domain.model.owner.Owner;
 import com.mikkaeru.bankaccount.domain.service.account.AccountService;
 import com.mikkaeru.bankaccount.domain.validation.account.AccountValidate.createAccount;
@@ -30,12 +31,12 @@ public class AccountController {
     @PostMapping
     public ResponseEntity<?> create(@Validated(createAccount.class) @RequestBody AccountDTO accountDTO) {
 
-        Owner owner = accountService.create(convertDTO(accountDTO));
+        Account account = accountService.create(convertDTO(accountDTO));
 
         return ResponseEntity.created(
                 ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{externalId}")
-                .buildAndExpand(owner.getExternalId())
+                .buildAndExpand(account.getExternalId())
                 .toUri()
         ).build();
     }
@@ -78,23 +79,23 @@ public class AccountController {
 
         LocalDate birth = null;
 
-        if (accountDTO.getBirth() != null) {
-            birth = convertDate(accountDTO.getBirth());
+        if (accountDTO.getOwner().getBirth() != null) {
+            birth = convertDate(accountDTO.getOwner().getBirth());
+        }
+
+        // Expressões regulares
+        // Retira da string tudo que não for um número
+        if (accountDTO.getOwner().getCpf() != null) {
+            accountDTO.getOwner().setCpf(accountDTO.getOwner().getCpf().replaceAll("[^0-9]", ""));
         }
 
         Owner owner = accountDTO.convertToEntity();
         owner.setBirth(birth);
 
-        // Expressões regulares
-        // Retira da string tudo que não for um número
-        if (owner.getCpf() != null) {
-            owner.setCpf(owner.getCpf().replaceAll("[^0-9]", ""));
-        }
-
         return owner;
     }
 
-    private Page<AccountDTO> convertToPageDTO(Page<Owner> accountPage) {
+    private Page<AccountDTO> convertToPageDTO(Page<Account> accountPage) {
 
         List<AccountDTO> outputs = new ArrayList<>();
 

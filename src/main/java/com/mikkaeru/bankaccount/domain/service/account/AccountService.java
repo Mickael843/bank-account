@@ -1,5 +1,6 @@
 package com.mikkaeru.bankaccount.domain.service.account;
 
+import com.mikkaeru.bankaccount.domain.model.account.Account;
 import com.mikkaeru.bankaccount.domain.model.owner.Owner;
 import org.springframework.data.domain.Page;
 
@@ -7,13 +8,13 @@ import java.util.UUID;
 
 public interface AccountService {
 
-    Owner create(Owner owner);
+    Account create(Owner convertDTO);
 
-    Owner update(Owner owner);
+    void update(Owner convertDTO);
 
-    Owner findOne(UUID externalId);
+    Account findOne(UUID externalId);
 
-    Page<Owner> findAllPages(Integer page);
+    Page<Account> findAllPages(Integer page);
 
     void delete(UUID externalId);
 }

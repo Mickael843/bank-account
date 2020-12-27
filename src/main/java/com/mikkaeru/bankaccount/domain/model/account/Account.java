@@ -2,6 +2,8 @@ package com.mikkaeru.bankaccount.domain.model.account;
 
 import com.mikkaeru.bankaccount.domain.model.enumeration.AccountType;
 import com.mikkaeru.bankaccount.domain.model.owner.Owner;
+import com.mikkaeru.bankaccount.dto.account.AccountDTO;
+import org.modelmapper.ModelMapper;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -151,5 +153,9 @@ public class Account implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, owner, externalId, type, bankCode, agency, number, securityCode, valid, createdAt, updatedAt);
+    }
+
+    public AccountDTO convertToDTO() {
+        return new ModelMapper().map(this, AccountDTO.class);
     }
 }
