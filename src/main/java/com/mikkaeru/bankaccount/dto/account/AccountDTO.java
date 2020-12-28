@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.mikkaeru.bankaccount.domain.model.account.Account;
 import com.mikkaeru.bankaccount.domain.model.enumeration.AccountType;
 import com.mikkaeru.bankaccount.domain.validation.AccountValidate.createAccount;
-import com.mikkaeru.bankaccount.domain.validation.AccountValidate.updateAccount;
 import com.mikkaeru.bankaccount.dto.owner.OwnerDTO;
 import lombok.*;
 import org.modelmapper.ModelMapper;
@@ -25,19 +24,13 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 public class AccountDTO {
 
-    @NotNull(
-            message = "ExternalId não pode ser nulo!",
-            groups = {createAccount.class})
+    @NotNull(message = "ExternalId não pode ser nulo!")
     private UUID externalId;
 
-    @NotNull(
-            message = "O tipo da conta não pode ser nulo!",
-            groups = {createAccount.class})
+    @NotNull(message = "O tipo da conta não pode ser nulo!")
     private AccountType accountType;
 
-    @NotNull(
-            message = "Owner não pode ser nulo!",
-            groups = {createAccount.class, updateAccount.class})
+    @NotNull(message = "Owner não pode ser nulo!")
     private OwnerDTO owner;
 
     public Account convertToEntity() {

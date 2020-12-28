@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.util.Random;
 import java.util.UUID;
 
 import static javax.persistence.EnumType.ORDINAL;
@@ -158,15 +159,40 @@ public class Account implements Serializable {
         return new ModelMapper().map(this, AccountDTO.class);
     }
 
+    // Gerando número aleatório para exemplificar de forma simples um código de segurança.
     public void generateSecurityCode() {
         // TODO criar código que gera aleatoriamente um código de segurança de 3 dígitos.
+
+        StringBuilder securityCode = new StringBuilder();
+
+        for (int i = 1; i <= 3; i++) {
+
+            Random random = new Random();
+
+            securityCode.append(((Integer) (random.nextInt(9))).toString());
+        }
+
+        this.securityCode = securityCode.toString();
     }
 
     public void generateAccountNumber() {
         // TODO criar código que gera aleatoriamente um código de segurança de 8 dígitos.
+
+        StringBuilder accountNumber = new StringBuilder();
+
+        for (int i = 1; i <= 8; i++) {
+
+            Random random = new Random();
+
+            accountNumber.append(((Integer) (random.nextInt(9))).toString());
+        }
+
+        this.accountNumber = accountNumber.toString();
     }
 
     public void generateExpirationDate() {
         // TODO criar código que gera aleatoriamente uma data de validade de acordo com a data em que a conta foi criada.
+
+        this.expirationDate = OffsetDateTime.now().plusYears(5).plusWeeks(3);
     }
 }

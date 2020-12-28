@@ -2,7 +2,6 @@ package com.mikkaeru.bankaccount.controller;
 
 import com.mikkaeru.bankaccount.domain.model.account.Account;
 import com.mikkaeru.bankaccount.domain.service.account.AccountService;
-import com.mikkaeru.bankaccount.domain.validation.AccountValidate.createAccount;
 import com.mikkaeru.bankaccount.domain.validation.AccountValidate.updateAccount;
 import com.mikkaeru.bankaccount.dto.account.AccountDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class AccountController {
     @Autowired private AccountService accountService;
 
     @PostMapping
-    public ResponseEntity<?> create(@Validated(createAccount.class) @RequestBody AccountDTO accountDTO) {
+    public ResponseEntity<?> create(@Valid @RequestBody AccountDTO accountDTO) {
 
         Account account = accountService.create(convertDTO(accountDTO));
 

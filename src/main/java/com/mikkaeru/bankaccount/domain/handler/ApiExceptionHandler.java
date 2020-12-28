@@ -85,7 +85,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String msg;
 
         if (exception instanceof DataIntegrityViolationException) {
-            msg = ((DataIntegrityViolationException) exception).getCause().getCause().getMessage();
+            msg = ((DataIntegrityViolationException) exception).getMessage();
+        } else if (exception instanceof ConstraintViolationException) {
+            msg = exception.getCause().getCause().getMessage();
         } else {
             msg = exception.getMessage();
         }

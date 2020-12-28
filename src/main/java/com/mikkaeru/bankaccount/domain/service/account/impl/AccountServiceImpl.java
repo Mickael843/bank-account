@@ -1,16 +1,19 @@
 package com.mikkaeru.bankaccount.domain.service.account.impl;
 
 import com.mikkaeru.bankaccount.domain.model.account.Account;
-import com.mikkaeru.bankaccount.domain.model.owner.Owner;
 import com.mikkaeru.bankaccount.domain.service.account.AccountService;
 import com.mikkaeru.bankaccount.domain.service.owner.OwnerService;
 import com.mikkaeru.bankaccount.repository.account.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,8 +23,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired private AccountRepository accountRepository;
 
-    private static final String AGENCY = "";
-    private static final String BANK_CODE = "";
+    private static final Integer ITEMS_PER_PAGE = 4;
+
+    private static final String AGENCY = "0001";
+    private static final String BANK_CODE = "077";
+
+    private static final String NOT_FOUND = "A conta não foi encontrada!";
 
     @Override
     public Account create(Account account) {
@@ -35,6 +42,8 @@ public class AccountServiceImpl implements AccountService {
 
         accountValidation(account);
 
+        account.setOwnerAccount(ownerService.create(account.getOwnerAccount()));
+
         account.setCreatedAt(OffsetDateTime.now());
 
         return accountRepository.save(account);
@@ -47,17 +56,40 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account findOne(UUID externalId) {
-        return null;
+
+        Optional<Account> accountOptional = accountRepository.findByExternalId(externalId);
+
+        if (accountOptional.isEmpty()) {
+            throw new EntityNotFoundException(NOT_FOUND);
+        }
+
+        return accountOptional.get();
     }
 
     @Override
     public Page<Account> findAllPages(Integer page) {
-        return null;
+
+        PageRequest pageRequest = PageRequest.of(page, ITEMS_PER_PAGE, Sort.by("createdAt"));
+
+        Page<Account> accountPage = accountRepository.findAll(pageRequest);
+
+        if (page == 0 && accountPage.getTotalElements() == 0) {
+            throw new EntityNotFoundException("Nenhuma página foi encontrada!");
+        }
+
+        return accountPage;
     }
 
     @Override
     public void delete(UUID externalId) {
 
+        Optional<Account> accountOptional = accountRepository.findByExternalId(externalId);
+
+        if (accountOptional.isEmpty()) {
+            throw new EntityNotFoundException(NOT_FOUND);
+        }
+
+        accountRepository.delete(accountOptional.get());
     }
 
     // Verifica a integridade dos dados contidos no objeto 'account'
@@ -70,19 +102,19 @@ public class AccountServiceImpl implements AccountService {
             throw new DataIntegrityViolationException("O tipo da conta não pode ser nulo!");
         }
 
-        if (account.getBankCode().isBlank() || account.getBankCode() == null) {
+        if (account.getBankCode() == null) {
             throw new DataIntegrityViolationException("O código do banco não pode ser nulo!");
         }
 
-        if (account.getAgency().isBlank() || account.getAgency() == null) {
+        if (account.getAgency() == null) {
             throw new DataIntegrityViolationException("A agência não pode ser nula!");
         }
 
-        if (account.getAccountNumber().isBlank() || account.getAccountNumber() == null) {
+        if (account.getAccountNumber() == null) {
             throw new DataIntegrityViolationException("O número da conta não pode ser nulo!");
         }
 
-        if (account.getSecurityCode().isBlank() || account.getSecurityCode() == null) {
+        if (account.getSecurityCode() == null) {
             throw new DataIntegrityViolationException("O código de segurança não pode ser nulo!");
         }
 

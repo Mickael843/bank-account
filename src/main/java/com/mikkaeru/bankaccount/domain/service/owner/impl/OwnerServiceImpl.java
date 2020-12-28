@@ -70,13 +70,13 @@ public class OwnerServiceImpl implements OwnerService {
 
         PageRequest pageRequest = PageRequest.of(page, ITEMS_PER_PAGE, Sort.by("fullName"));
 
-        Page<Owner> accountPage = ownerRepository.findAll(pageRequest);
+        Page<Owner> ownerPage = ownerRepository.findAll(pageRequest);
 
-        if (page == 0 && accountPage.getTotalElements() == 0) {
+        if (page == 0 && ownerPage.getTotalElements() == 0) {
             throw new EntityNotFoundException("Nenhuma página foi encontrada!");
         }
 
-        return accountPage;
+        return ownerPage;
     }
 
     @Override
@@ -97,15 +97,15 @@ public class OwnerServiceImpl implements OwnerService {
     // status 400 para o client e informando o campo incorreto.
     private void ownerValidation(Owner owner) {
 
-        if (owner.getFullName().isBlank() || owner.getFullName() == null) {
+        if (owner.getFullName() == null) {
             throw new DataIntegrityViolationException("FullName não pode ser nulo!");
         }
 
-        if (owner.getEmail().isBlank() || owner.getEmail() == null) {
+        if (owner.getEmail() == null) {
             throw new DataIntegrityViolationException("Email não pode ser nulo!");
         }
 
-        if (owner.getCpf().isBlank() || owner.getCpf() == null) {
+        if (owner.getCpf() == null) {
             throw new DataIntegrityViolationException("cpf não pode ser nulo!");
         }
 
