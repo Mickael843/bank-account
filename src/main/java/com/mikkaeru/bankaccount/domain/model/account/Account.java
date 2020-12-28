@@ -23,16 +23,15 @@ public class Account implements Serializable {
     @GeneratedValue(strategy = AUTO)
     private Long id;
 
-    @ManyToOne
-    @Column(name = "owner_account", nullable = false)
-    private Owner owner;
+    @ManyToOne(optional = false)
+    private Owner ownerAccount;
 
     @Column(unique = true, nullable = false)
     private UUID externalId;
 
     @Enumerated(ORDINAL)
     @Column(nullable = false)
-    private AccountType type;
+    private AccountType accountType;
 
     @Column(nullable = false)
     private String bankCode;
@@ -41,13 +40,13 @@ public class Account implements Serializable {
     private String agency;
 
     @Column(nullable = false)
-    private String number;
+    private String accountNumber;
 
     @Column(nullable = false)
     private String securityCode;
 
     @Column(nullable = false)
-    private OffsetDateTime valid;
+    private OffsetDateTime expirationDate;
 
     @Column(nullable = false)
     private OffsetDateTime createdAt;
@@ -62,12 +61,12 @@ public class Account implements Serializable {
         this.id = id;
     }
 
-    public Owner getOwner() {
-        return owner;
+    public Owner getOwnerAccount() {
+        return ownerAccount;
     }
 
-    public void setOwner(Owner owner) {
-        this.owner = owner;
+    public void setOwnerAccount(Owner ownerAccount) {
+        this.ownerAccount = ownerAccount;
     }
 
     public UUID getExternalId() {
@@ -78,12 +77,12 @@ public class Account implements Serializable {
         this.externalId = externalId;
     }
 
-    public AccountType getType() {
-        return type;
+    public AccountType getAccountType() {
+        return accountType;
     }
 
-    public void setType(AccountType type) {
-        this.type = type;
+    public void setAccountType(AccountType accountType) {
+        this.accountType = accountType;
     }
 
     public String getBankCode() {
@@ -102,12 +101,12 @@ public class Account implements Serializable {
         this.agency = agency;
     }
 
-    public String getNumber() {
-        return number;
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public String getSecurityCode() {
@@ -118,12 +117,12 @@ public class Account implements Serializable {
         this.securityCode = securityCode;
     }
 
-    public OffsetDateTime getValid() {
-        return valid;
+    public OffsetDateTime getExpirationDate() {
+        return expirationDate;
     }
 
-    public void setValid(OffsetDateTime valid) {
-        this.valid = valid;
+    public void setExpirationDate(OffsetDateTime expirationDate) {
+        this.expirationDate = expirationDate;
     }
 
     public OffsetDateTime getCreatedAt() {
@@ -147,15 +146,27 @@ public class Account implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
-        return Objects.equals(id, account.id) && Objects.equals(owner, account.owner) && Objects.equals(externalId, account.externalId) && type == account.type && Objects.equals(bankCode, account.bankCode) && Objects.equals(agency, account.agency) && Objects.equals(number, account.number) && Objects.equals(securityCode, account.securityCode) && Objects.equals(valid, account.valid) && Objects.equals(createdAt, account.createdAt) && Objects.equals(updatedAt, account.updatedAt);
+        return Objects.equals(id, account.id) && Objects.equals(ownerAccount, account.ownerAccount) && Objects.equals(externalId, account.externalId) && accountType == account.accountType && Objects.equals(bankCode, account.bankCode) && Objects.equals(agency, account.agency) && Objects.equals(accountNumber, account.accountNumber) && Objects.equals(securityCode, account.securityCode) && Objects.equals(expirationDate, account.expirationDate) && Objects.equals(createdAt, account.createdAt) && Objects.equals(updatedAt, account.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, owner, externalId, type, bankCode, agency, number, securityCode, valid, createdAt, updatedAt);
+        return Objects.hash(id, ownerAccount, externalId, accountType, bankCode, agency, accountNumber, securityCode, expirationDate, createdAt, updatedAt);
     }
 
     public AccountDTO convertToDTO() {
         return new ModelMapper().map(this, AccountDTO.class);
+    }
+
+    public void generateSecurityCode() {
+        // TODO criar código que gera aleatoriamente um código de segurança de 3 dígitos.
+    }
+
+    public void generateAccountNumber() {
+        // TODO criar código que gera aleatoriamente um código de segurança de 8 dígitos.
+    }
+
+    public void generateExpirationDate() {
+        // TODO criar código que gera aleatoriamente uma data de validade de acordo com a data em que a conta foi criada.
     }
 }

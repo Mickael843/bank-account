@@ -1,10 +1,9 @@
 package com.mikkaeru.bankaccount.controller;
 
 import com.mikkaeru.bankaccount.domain.model.account.Account;
-import com.mikkaeru.bankaccount.domain.model.owner.Owner;
 import com.mikkaeru.bankaccount.domain.service.account.AccountService;
-import com.mikkaeru.bankaccount.domain.validation.account.AccountValidate.createAccount;
-import com.mikkaeru.bankaccount.domain.validation.account.AccountValidate.updateAccount;
+import com.mikkaeru.bankaccount.domain.validation.AccountValidate.createAccount;
+import com.mikkaeru.bankaccount.domain.validation.AccountValidate.updateAccount;
 import com.mikkaeru.bankaccount.dto.account.AccountDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -75,7 +74,7 @@ public class AccountController {
         return  LocalDate.parse(date, format);
     }
 
-    private Owner convertDTO(AccountDTO accountDTO) {
+    private Account convertDTO(AccountDTO accountDTO) {
 
         LocalDate birth = null;
 
@@ -89,10 +88,10 @@ public class AccountController {
             accountDTO.getOwner().setCpf(accountDTO.getOwner().getCpf().replaceAll("[^0-9]", ""));
         }
 
-        Owner owner = accountDTO.convertToEntity();
-        owner.setBirth(birth);
+        Account account = accountDTO.convertToEntity();
+        account.getOwnerAccount().setBirth(birth);
 
-        return owner;
+        return account;
     }
 
     private Page<AccountDTO> convertToPageDTO(Page<Account> accountPage) {

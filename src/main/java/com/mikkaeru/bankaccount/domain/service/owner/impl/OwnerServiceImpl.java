@@ -30,7 +30,7 @@ public class OwnerServiceImpl implements OwnerService {
     @Override
     public Owner create(Owner owner) {
 
-        accountValidation(owner);
+        ownerValidation(owner);
 
         owner.setCreatedAt(OffsetDateTime.now());
 
@@ -48,7 +48,7 @@ public class OwnerServiceImpl implements OwnerService {
 
         populateFields(owner, accountOptional.get());
 
-        accountValidation(owner);
+        ownerValidation(owner);
 
         return ownerRepository.save(owner);
     }
@@ -95,7 +95,7 @@ public class OwnerServiceImpl implements OwnerService {
     // caso algum dado obrigatório esteja nulo ou em brando
     // será dispara a exceção 'DataIntegrityViolationException' retornando
     // status 400 para o client e informando o campo incorreto.
-    private void accountValidation(Owner owner) {
+    private void ownerValidation(Owner owner) {
 
         if (owner.getFullName().isBlank() || owner.getFullName() == null) {
             throw new DataIntegrityViolationException("FullName não pode ser nulo!");

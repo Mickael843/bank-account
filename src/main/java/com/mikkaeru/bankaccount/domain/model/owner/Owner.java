@@ -39,7 +39,7 @@ public class Owner implements Serializable {
 
     private OffsetDateTime updatedAt;
 
-    @OneToMany(mappedBy = "owner_account", fetch = EAGER)
+    @OneToMany(mappedBy = "ownerAccount", fetch = EAGER)
     private List<Account> accounts;
 
     public Long getId() {

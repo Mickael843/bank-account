@@ -2,10 +2,10 @@ package com.mikkaeru.bankaccount.dto.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.mikkaeru.bankaccount.domain.model.account.Account;
 import com.mikkaeru.bankaccount.domain.model.enumeration.AccountType;
-import com.mikkaeru.bankaccount.domain.model.owner.Owner;
-import com.mikkaeru.bankaccount.domain.validation.account.AccountValidate.createAccount;
-import com.mikkaeru.bankaccount.domain.validation.account.AccountValidate.updateAccount;
+import com.mikkaeru.bankaccount.domain.validation.AccountValidate.createAccount;
+import com.mikkaeru.bankaccount.domain.validation.AccountValidate.updateAccount;
 import com.mikkaeru.bankaccount.dto.owner.OwnerDTO;
 import lombok.*;
 import org.modelmapper.ModelMapper;
@@ -33,21 +33,21 @@ public class AccountDTO {
     @NotNull(
             message = "O tipo da conta não pode ser nulo!",
             groups = {createAccount.class})
-    private AccountType type;
+    private AccountType accountType;
 
     @NotNull(
-            message = "ExternalId não pode ser nulo!",
+            message = "Owner não pode ser nulo!",
             groups = {createAccount.class, updateAccount.class})
     private OwnerDTO owner;
 
-    public Owner convertToEntity() {
+    public Account convertToEntity() {
         ModelMapper mapper = new ModelMapper();
         mapper.addMappings(skipIdFieldsMap);
-        return mapper.map(this, Owner.class);
+        return mapper.map(this, Account.class);
     }
 
     @JsonIgnore
-    PropertyMap<AccountDTO, Owner> skipIdFieldsMap = new PropertyMap<>() {
+    PropertyMap<AccountDTO, Account> skipIdFieldsMap = new PropertyMap<>() {
         @Override
         protected void configure() {
             skip().setId(null);
