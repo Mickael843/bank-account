@@ -25,7 +25,7 @@ public class OwnerServiceImpl implements OwnerService {
     @Autowired private OwnerRepository ownerRepository;
 
     private static final Integer ITEMS_PER_PAGE = 4;
-    private static final String NOT_FOUND = "Conta não encontrada!";
+    private static final String NOT_FOUND = "O proprietário da conta não foi encontrado!";
 
     @Override
     public Owner create(Owner owner) {
@@ -39,6 +39,10 @@ public class OwnerServiceImpl implements OwnerService {
 
     @Override
     public Owner update(Owner owner) {
+
+        if (owner.getCpf() == null) {
+            throw new DataIntegrityViolationException("cpf não pode ser nulo!");
+        }
 
         Optional<Owner> accountOptional = ownerRepository.findByCpf(owner.getCpf());
 
@@ -103,10 +107,6 @@ public class OwnerServiceImpl implements OwnerService {
 
         if (owner.getEmail() == null) {
             throw new DataIntegrityViolationException("Email não pode ser nulo!");
-        }
-
-        if (owner.getCpf() == null) {
-            throw new DataIntegrityViolationException("cpf não pode ser nulo!");
         }
 
         if (owner.getBirth() == null) {

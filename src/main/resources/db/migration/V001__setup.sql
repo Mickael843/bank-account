@@ -19,11 +19,13 @@ CREATE TABLE account (
     external_id uuid NOT NULL,
     account_number character varying(255) NOT NULL,
     security_code character varying(255) NOT NULL,
-    account_type integer NOT NULL,
+    account_type character varying(255) NOT NULL,
     updated_at timestamp without time zone,
     expiration_date timestamp without time zone NOT NULL,
     owner_account_id bigint NOT NULL,
     CONSTRAINT account_pkey PRIMARY KEY (id),
     CONSTRAINT uk_external_id UNIQUE (external_id),
+    CONSTRAINT uk_security_code UNIQUE (security_code),
+    CONSTRAINT uk_account_number UNIQUE (account_number),
     CONSTRAINT fk_owner_account_id FOREIGN KEY (owner_account_id) REFERENCES owner_account (id)
 );

@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
-import static javax.persistence.EnumType.ORDINAL;
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.AUTO;
 
 @Entity
@@ -30,7 +30,7 @@ public class Account implements Serializable {
     @Column(unique = true, nullable = false)
     private UUID externalId;
 
-    @Enumerated(ORDINAL)
+    @Enumerated(STRING)
     @Column(nullable = false)
     private AccountType accountType;
 
@@ -40,10 +40,10 @@ public class Account implements Serializable {
     @Column(nullable = false)
     private String agency;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String accountNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String securityCode;
 
     @Column(nullable = false)

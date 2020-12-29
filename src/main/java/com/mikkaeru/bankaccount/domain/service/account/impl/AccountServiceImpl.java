@@ -52,6 +52,21 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void update(Account account) {
 
+        Optional<Account> accountOptional = accountRepository.findByExternalId(account.getExternalId());
+
+        if (accountOptional.isEmpty()) {
+            throw new EntityNotFoundException(NOT_FOUND);
+        }
+
+        if (account.getOwnerAccount() != null) {
+            ownerService.update(account.getOwnerAccount());
+        }
+
+        populateFields(account, accountOptional.get());
+
+        accountValidation(account);
+
+        accountRepository.save(account);
     }
 
     @Override
@@ -90,6 +105,8 @@ public class AccountServiceImpl implements AccountService {
         }
 
         accountRepository.delete(accountOptional.get());
+
+        ownerService.delete(accountOptional.get().getOwnerAccount().getCpf());
     }
 
     // Verifica a integridade dos dados contidos no objeto 'account'
@@ -125,5 +142,25 @@ public class AccountServiceImpl implements AccountService {
         if (account.getOwnerAccount() == null) {
             throw new DataIntegrityViolationException("O proprietário da conta não pode ser nulo!");
         }
+    }
+
+    private void populateFields(Account account, Account accountInDatabase) {
+
+        if (account.getAccountType() == null) {
+            account.setAccountType(accountInDatabase.getAccountType());
+        }
+
+        if (account.getOwnerAccount() == null) {
+            account.setOwnerAccount(accountInDatabase.getOwnerAccount());
+        }
+
+        account.setId(accountInDatabase.getId());
+        account.setUpdatedAt(OffsetDateTime.now());
+        account.setAgency(accountInDatabase.getAgency());
+        account.setBankCode(accountInDatabase.getBankCode());
+        account.setCreatedAt(accountInDatabase.getCreatedAt());
+        account.setSecurityCode(accountInDatabase.getSecurityCode());
+        account.setAccountNumber(accountInDatabase.getAccountNumber());
+        account.setExpirationDate(accountInDatabase.getExpirationDate());
     }
 }

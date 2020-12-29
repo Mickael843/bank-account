@@ -2,13 +2,13 @@ package com.mikkaeru.bankaccount.domain.model.enumeration;
 
 public enum AccountType {
 
-    CURRENT_ACCOUNT("Conta corrente", 001),
-    SAVINGS_ACCOUNT("Conta poupança", 013);
+    CURRENT_ACCOUNT("Conta corrente", "001"),
+    SAVINGS_ACCOUNT("Conta poupança", "013");
 
     String type;
-    Integer operationCode;
+    String operationCode;
 
-    AccountType(String type, Integer operationCode) {
+    AccountType(String type, String operationCode) {
         this.type = type;
         this.operationCode = operationCode;
     }
@@ -17,7 +17,7 @@ public enum AccountType {
         return type;
     }
 
-    public Integer getOperationCode() {
+    public String getOperationCode() {
         return operationCode;
     }
 }
